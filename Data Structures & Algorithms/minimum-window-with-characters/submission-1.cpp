@@ -1,0 +1,43 @@
+class Solution {
+public:
+    bool compare(unordered_map<char , int>& hashS,unordered_map<char , int>& hashT){
+        for(auto it : hashT){
+            if(hashS.find(it.first) == hashS.end() || hashS[it.first] < it.second) return false;
+        }
+        return true;
+    }
+    string minWindow(string s, string t) {
+        if(s.size() < t.size()) return "";
+        unordered_map<char , int> hashT;
+        unordered_map<char , int> hashS;
+        int l = 0;
+
+        int minLen = INT_MAX;
+        int start = -1;
+
+        for(auto it : t){
+            hashT[it]++;
+        }
+
+        int have = 0;
+        int need = hashT.size();
+
+        for(int r = 0 ; r < s.size() ; r++){
+            hashS[s[r]]++;
+            if(hashS[s[r]] == hashT[s[r]]) have++;
+            
+            while(have == need){
+                if(r-l+1 < minLen){
+                    minLen = r - l + 1;
+                    start = l;
+                }
+                hashS[s[l]]--;
+                if(hashS[s[l]] < hashT[s[l]]) have--;
+                l++;
+            }
+        }
+
+        if(start == -1) return "";
+        return s.substr(start , minLen);
+    }
+};
